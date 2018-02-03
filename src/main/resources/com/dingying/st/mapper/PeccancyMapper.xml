@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingying.st.dao.PeccancyMapper">
+  <resultMap id="BaseResultMap" type="com.dingying.st.po.Peccancy">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="car_id" jdbcType="VARCHAR" property="carId" />
+    <result column="plate_number" jdbcType="VARCHAR" property="plateNumber" />
+    <result column="peccancy_type" jdbcType="INTEGER" property="peccancyType" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="deduct_marks" jdbcType="TINYINT" property="deductMarks" />
+    <result column="fine" jdbcType="DECIMAL" property="fine" />
+    <result column="treatment_status" jdbcType="BIT" property="treatmentStatus" />
+    <result column="site" jdbcType="VARCHAR" property="site" />
+    <result column="peccancy_time" jdbcType="TIMESTAMP" property="peccancyTime" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+  </resultMap>
+  <sql id="peccancyColumns">
+    <![CDATA[ id,car_id,plate_number,peccancy_type,description,deduct_marks,fine,treatment_status,site,peccancy_time,photo ]]>
+  </sql>
+  <sql id="peccancyDynamicWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id = #{ id}</if>
+      <if test="null != carId and '' !=  carId">and car_id = #{ carId}</if>
+      <if test="null != plateNumber and '' !=  plateNumber">and plate_number = #{ plateNumber}</if>
+      <if test="null != peccancyType and '' !=  peccancyType">and peccancy_type = #{ peccancyType}</if>
+      <if test="null != description and '' !=  description">and description = #{ description}</if>
+      <if test="null != deductMarks and '' !=  deductMarks">and deduct_marks = #{ deductMarks}</if>
+      <if test="null != fine and '' !=  fine">and fine = #{ fine}</if>
+      <if test="null != treatmentStatus and '' !=  treatmentStatus">and treatment_status = #{ treatmentStatus}</if>
+      <if test="null != site and '' !=  site">and site = #{ site}</if>
+      <if test="null != peccancyTime and '' !=  peccancyTime">and peccancy_time = #{ peccancyTime}</if>
+      <if test="null != photo and '' !=  photo">and photo = #{ photo}</if>
+	</where>
+  </sql>
+  <sql id="peccancyDynamicLikeWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id LIKE #{ id}</if>
+      <if test="null != carId and '' !=  carId">and car_id LIKE #{ carId}</if>
+      <if test="null != plateNumber and '' !=  plateNumber">and plate_number LIKE #{ plateNumber}</if>
+      <if test="null != peccancyType and '' !=  peccancyType">and peccancy_type LIKE #{ peccancyType}</if>
+      <if test="null != description and '' !=  description">and description LIKE #{ description}</if>
+      <if test="null != deductMarks and '' !=  deductMarks">and deduct_marks LIKE #{ deductMarks}</if>
+      <if test="null != fine and '' !=  fine">and fine LIKE #{ fine}</if>
+      <if test="null != treatmentStatus and '' !=  treatmentStatus">and treatment_status LIKE #{ treatmentStatus}</if>
+      <if test="null != site and '' !=  site">and site LIKE #{ site}</if>
+      <if test="null != peccancyTime and '' !=  peccancyTime">and peccancy_time LIKE #{ peccancyTime}</if>
+      <if test="null != photo and '' !=  photo">and photo LIKE #{ photo}</if>
+	</where>
+  </sql>
+  <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select <include refid="peccancyColumns" /> from  peccancy where id = #{id}
+  </select>
+  <select id="getOne" parameterType="com.dingying.st.po.Peccancy" resultMap="BaseResultMap">
+    select <include refid="peccancyColumns" /> from  peccancy <include refid="peccancyDynamicWhere" /> limit 0 , 1
+  </select>
+  <select id="list" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="peccancyColumns" /> from  peccancy <include refid="peccancyDynamicWhere" />
+	<if test="orderBy != null and orderBy != ''">
+          order by ${orderBy}
+      </if>
+  </select>
+  <select id="listPage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="peccancyColumns" /> from  peccancy <include refid="peccancyDynamicWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="listLikePage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="peccancyColumns" /> from  peccancy <include refid="peccancyDynamicLikeWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="countLike" parameterType="com.dingying.st.po.Peccancy" resultType="java.lang.Long">
+    select count(1) from peccancy <include refid="peccancyDynamicLikeWhere" />
+  </select>
+  <select id="count" parameterType="com.dingying.st.po.Peccancy" resultType="java.lang.Long">
+    select count(1) from peccancy <include refid="peccancyDynamicWhere" />
+  </select>
+  <sql id="save_peccancy_columns">
+    insert into peccancy(
+		car_id ,plate_number ,peccancy_type ,description ,deduct_marks ,fine ,treatment_status ,site ,peccancy_time ,photo
+	) values
+  </sql>
+  <sql id="save_peccancy_values">
+    (
+	  #{ carId,jdbcType=VARCHAR},
+	  #{ plateNumber,jdbcType=VARCHAR},
+	  #{ peccancyType,jdbcType=INTEGER},
+	  #{ description,jdbcType=VARCHAR},
+	  #{ deductMarks,jdbcType=TINYINT},
+	  #{ fine,jdbcType=DECIMAL},
+	  #{ treatmentStatus,jdbcType=BIT},
+	  #{ site,jdbcType=VARCHAR},
+	  #{ peccancyTime,jdbcType=TIMESTAMP},
+	  #{ photo,jdbcType=VARCHAR}
+	)
+  </sql>
+  <insert id="save" keyProperty="id" parameterType="com.dingying.st.po.Peccancy" useGeneratedKeys="true">
+    <include refid="save_peccancy_columns" /><include refid="save_peccancy_values" />
+  </insert>
+  <insert id="batchSave" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="save_peccancy_columns" /><include refid="save_peccancy_values" />
+	</foreach>
+  </insert>
+  <sql id="peccancyUpdate">
+    update peccancy 
+	<set> 
+      <if test="null != carId">car_id = #{ carId,jdbcType=VARCHAR},</if>
+      <if test="null != plateNumber">plate_number = #{ plateNumber,jdbcType=VARCHAR},</if>
+      <if test="null != peccancyType">peccancy_type = #{ peccancyType,jdbcType=INTEGER},</if>
+      <if test="null != description">description = #{ description,jdbcType=VARCHAR},</if>
+      <if test="null != deductMarks">deduct_marks = #{ deductMarks,jdbcType=TINYINT},</if>
+      <if test="null != fine">fine = #{ fine,jdbcType=DECIMAL},</if>
+      <if test="null != treatmentStatus">treatment_status = #{ treatmentStatus,jdbcType=BIT},</if>
+      <if test="null != site">site = #{ site,jdbcType=VARCHAR},</if>
+      <if test="null != peccancyTime">peccancy_time = #{ peccancyTime,jdbcType=TIMESTAMP},</if>
+      <if test="null != photo">photo = #{ photo,jdbcType=VARCHAR}</if>
+	</set>
+	where id = #{id}
+  </sql>
+  <update id="update" parameterType="com.dingying.st.po.Peccancy">
+    <include refid="peccancyUpdate" />
+  </update>
+  <update id="batchUpdate" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="peccancyUpdate" />
+	</foreach>
+  </update>
+  <delete id="delById">
+    <![CDATA[ delete from peccancy where id = #{id} ]]>
+  </delete>
+  <delete id="delArray">
+    delete from peccancy where id in
+	<foreach collection="array" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+  <delete id="delList">
+    delete from peccancy where id in
+	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+</mapper>

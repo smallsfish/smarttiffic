@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingying.st.dao.BusMapper">
+  <resultMap id="BaseResultMap" type="com.dingying.st.po.Bus">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="line_name" jdbcType="VARCHAR" property="lineName" />
+    <result column="speed" jdbcType="VARCHAR" property="speed" />
+    <result column="direction" jdbcType="BIT" property="direction" />
+    <result column="stations" jdbcType="VARCHAR" property="stations" />
+    <result column="current_station" jdbcType="VARCHAR" property="currentStation" />
+    <result column="max_load" jdbcType="INTEGER" property="maxLoad" />
+    <result column="cur_load" jdbcType="INTEGER" property="curLoad" />
+    <result column="first" jdbcType="VARCHAR" property="first" />
+    <result column="last" jdbcType="VARCHAR" property="last" />
+  </resultMap>
+  <sql id="busColumns">
+    <![CDATA[ id,line_name,speed,direction,stations,current_station,max_load,cur_load,first,last ]]>
+  </sql>
+  <sql id="busDynamicWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id = #{ id}</if>
+      <if test="null != lineName and '' !=  lineName">and line_name = #{ lineName}</if>
+      <if test="null != speed and '' !=  speed">and speed = #{ speed}</if>
+      <if test="null != direction and '' !=  direction">and direction = #{ direction}</if>
+      <if test="null != stations and '' !=  stations">and stations = #{ stations}</if>
+      <if test="null != currentStation and '' !=  currentStation">and current_station = #{ currentStation}</if>
+      <if test="null != maxLoad and '' !=  maxLoad">and max_load = #{ maxLoad}</if>
+      <if test="null != curLoad and '' !=  curLoad">and cur_load = #{ curLoad}</if>
+      <if test="null != first and '' !=  first">and first = #{ first}</if>
+      <if test="null != last and '' !=  last">and last = #{ last}</if>
+	</where>
+  </sql>
+  <sql id="busDynamicLikeWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id LIKE #{ id}</if>
+      <if test="null != lineName and '' !=  lineName">and line_name LIKE #{ lineName}</if>
+      <if test="null != speed and '' !=  speed">and speed LIKE #{ speed}</if>
+      <if test="null != direction and '' !=  direction">and direction LIKE #{ direction}</if>
+      <if test="null != stations and '' !=  stations">and stations LIKE #{ stations}</if>
+      <if test="null != currentStation and '' !=  currentStation">and current_station LIKE #{ currentStation}</if>
+      <if test="null != maxLoad and '' !=  maxLoad">and max_load LIKE #{ maxLoad}</if>
+      <if test="null != curLoad and '' !=  curLoad">and cur_load LIKE #{ curLoad}</if>
+      <if test="null != first and '' !=  first">and first LIKE #{ first}</if>
+      <if test="null != last and '' !=  last">and last LIKE #{ last}</if>
+	</where>
+  </sql>
+  <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select <include refid="busColumns" /> from  bus where id = #{id}
+  </select>
+  <select id="getOne" parameterType="com.dingying.st.po.Bus" resultMap="BaseResultMap">
+    select <include refid="busColumns" /> from  bus <include refid="busDynamicWhere" /> limit 0 , 1
+  </select>
+  <select id="list" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="busColumns" /> from  bus <include refid="busDynamicWhere" />
+	<if test="orderBy != null and orderBy != ''">
+          order by ${orderBy}
+      </if>
+  </select>
+  <select id="listPage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="busColumns" /> from  bus <include refid="busDynamicWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="listLikePage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="busColumns" /> from  bus <include refid="busDynamicLikeWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="countLike" parameterType="com.dingying.st.po.Bus" resultType="java.lang.Long">
+    select count(1) from bus <include refid="busDynamicLikeWhere" />
+  </select>
+  <select id="count" parameterType="com.dingying.st.po.Bus" resultType="java.lang.Long">
+    select count(1) from bus <include refid="busDynamicWhere" />
+  </select>
+  <sql id="save_bus_columns">
+    insert into bus(
+		line_name ,speed ,direction ,stations ,current_station ,max_load ,cur_load ,first ,last
+	) values
+  </sql>
+  <sql id="save_bus_values">
+    (
+	  #{ lineName,jdbcType=VARCHAR},
+	  #{ speed,jdbcType=VARCHAR},
+	  #{ direction,jdbcType=BIT},
+	  #{ stations,jdbcType=VARCHAR},
+	  #{ currentStation,jdbcType=VARCHAR},
+	  #{ maxLoad,jdbcType=INTEGER},
+	  #{ curLoad,jdbcType=INTEGER},
+	  #{ first,jdbcType=VARCHAR},
+	  #{ last,jdbcType=VARCHAR}
+	)
+  </sql>
+  <insert id="save" keyProperty="id" parameterType="com.dingying.st.po.Bus" useGeneratedKeys="true">
+    <include refid="save_bus_columns" /><include refid="save_bus_values" />
+  </insert>
+  <insert id="batchSave" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="save_bus_columns" /><include refid="save_bus_values" />
+	</foreach>
+  </insert>
+  <sql id="busUpdate">
+    update bus 
+	<set> 
+      <if test="null != lineName">line_name = #{ lineName,jdbcType=VARCHAR},</if>
+      <if test="null != speed">speed = #{ speed,jdbcType=VARCHAR},</if>
+      <if test="null != direction">direction = #{ direction,jdbcType=BIT},</if>
+      <if test="null != stations">stations = #{ stations,jdbcType=VARCHAR},</if>
+      <if test="null != currentStation">current_station = #{ currentStation,jdbcType=VARCHAR},</if>
+      <if test="null != maxLoad">max_load = #{ maxLoad,jdbcType=INTEGER},</if>
+      <if test="null != curLoad">cur_load = #{ curLoad,jdbcType=INTEGER},</if>
+      <if test="null != first">first = #{ first,jdbcType=VARCHAR},</if>
+      <if test="null != last">last = #{ last,jdbcType=VARCHAR}</if>
+	</set>
+	where id = #{id}
+  </sql>
+  <update id="update" parameterType="com.dingying.st.po.Bus">
+    <include refid="busUpdate" />
+  </update>
+  <update id="batchUpdate" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="busUpdate" />
+	</foreach>
+  </update>
+  <delete id="delById">
+    <![CDATA[ delete from bus where id = #{id} ]]>
+  </delete>
+  <delete id="delArray">
+    delete from bus where id in
+	<foreach collection="array" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+  <delete id="delList">
+    delete from bus where id in
+	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+</mapper>

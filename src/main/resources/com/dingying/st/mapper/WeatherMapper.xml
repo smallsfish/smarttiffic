@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingying.st.dao.WeatherMapper">
+  <resultMap id="BaseResultMap" type="com.dingying.st.po.Weather">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="temperature_range" jdbcType="VARCHAR" property="temperatureRange" />
+    <result column="current_temperature" jdbcType="INTEGER" property="currentTemperature" />
+    <result column="humidity" jdbcType="VARCHAR" property="humidity" />
+    <result column="pm2_5" jdbcType="VARCHAR" property="pm25" />
+    <result column="wind" jdbcType="VARCHAR" property="wind" />
+    <result column="weather_status" jdbcType="VARCHAR" property="weatherStatus" />
+    <result column="ultraviolet" jdbcType="INTEGER" property="ultraviolet" />
+    <result column="CO2" jdbcType="INTEGER" property="co2" />
+    <result column="current_time" jdbcType="TIMESTAMP" property="currentTime" />
+  </resultMap>
+  <sql id="weatherColumns">
+    <![CDATA[ id,temperature_range,current_temperature,humidity,pm2_5,wind,weather_status,ultraviolet,CO2,current_time ]]>
+  </sql>
+  <sql id="weatherDynamicWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id = #{ id}</if>
+      <if test="null != temperatureRange and '' !=  temperatureRange">and temperature_range = #{ temperatureRange}</if>
+      <if test="null != currentTemperature and '' !=  currentTemperature">and current_temperature = #{ currentTemperature}</if>
+      <if test="null != humidity and '' !=  humidity">and humidity = #{ humidity}</if>
+      <if test="null != pm25 and '' !=  pm25">and pm2_5 = #{ pm25}</if>
+      <if test="null != wind and '' !=  wind">and wind = #{ wind}</if>
+      <if test="null != weatherStatus and '' !=  weatherStatus">and weather_status = #{ weatherStatus}</if>
+      <if test="null != ultraviolet and '' !=  ultraviolet">and ultraviolet = #{ ultraviolet}</if>
+      <if test="null != co2 and '' !=  co2">and CO2 = #{ co2}</if>
+      <if test="null != currentTime and '' !=  currentTime">and current_time = #{ currentTime}</if>
+	</where>
+  </sql>
+  <sql id="weatherDynamicLikeWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id LIKE #{ id}</if>
+      <if test="null != temperatureRange and '' !=  temperatureRange">and temperature_range LIKE #{ temperatureRange}</if>
+      <if test="null != currentTemperature and '' !=  currentTemperature">and current_temperature LIKE #{ currentTemperature}</if>
+      <if test="null != humidity and '' !=  humidity">and humidity LIKE #{ humidity}</if>
+      <if test="null != pm25 and '' !=  pm25">and pm2_5 LIKE #{ pm25}</if>
+      <if test="null != wind and '' !=  wind">and wind LIKE #{ wind}</if>
+      <if test="null != weatherStatus and '' !=  weatherStatus">and weather_status LIKE #{ weatherStatus}</if>
+      <if test="null != ultraviolet and '' !=  ultraviolet">and ultraviolet LIKE #{ ultraviolet}</if>
+      <if test="null != co2 and '' !=  co2">and CO2 LIKE #{ co2}</if>
+      <if test="null != currentTime and '' !=  currentTime">and current_time LIKE #{ currentTime}</if>
+	</where>
+  </sql>
+  <select id="getById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select <include refid="weatherColumns" /> from  weather where id = #{id}
+  </select>
+  <select id="getOne" parameterType="com.dingying.st.po.Weather" resultMap="BaseResultMap">
+    select <include refid="weatherColumns" /> from  weather <include refid="weatherDynamicWhere" /> limit 0 , 1
+  </select>
+  <select id="list" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="weatherColumns" /> from  weather <include refid="weatherDynamicWhere" />
+	<if test="orderBy != null and orderBy != ''">
+          order by ${orderBy}
+      </if>
+  </select>
+  <select id="listPage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="weatherColumns" /> from  weather <include refid="weatherDynamicWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="listLikePage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="weatherColumns" /> from  weather <include refid="weatherDynamicLikeWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="countLike" parameterType="com.dingying.st.po.Weather" resultType="java.lang.Long">
+    select count(1) from weather <include refid="weatherDynamicLikeWhere" />
+  </select>
+  <select id="count" parameterType="com.dingying.st.po.Weather" resultType="java.lang.Long">
+    select count(1) from weather <include refid="weatherDynamicWhere" />
+  </select>
+  <sql id="save_weather_columns">
+    insert into weather(
+		id ,temperature_range ,current_temperature ,humidity ,pm2_5 ,wind ,weather_status ,ultraviolet ,CO2 ,current_time
+	) values
+  </sql>
+  <sql id="save_weather_values">
+    (
+	  #{ id,jdbcType=VARCHAR},
+	  #{ temperatureRange,jdbcType=VARCHAR},
+	  #{ currentTemperature,jdbcType=INTEGER},
+	  #{ humidity,jdbcType=VARCHAR},
+	  #{ pm25,jdbcType=VARCHAR},
+	  #{ wind,jdbcType=VARCHAR},
+	  #{ weatherStatus,jdbcType=VARCHAR},
+	  #{ ultraviolet,jdbcType=INTEGER},
+	  #{ co2,jdbcType=INTEGER},
+	  #{ currentTime,jdbcType=TIMESTAMP}
+	)
+  </sql>
+  <insert id="save" keyProperty="id" parameterType="com.dingying.st.po.Weather" useGeneratedKeys="true">
+    <include refid="save_weather_columns" /><include refid="save_weather_values" />
+  </insert>
+  <insert id="batchSave" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="save_weather_columns" /><include refid="save_weather_values" />
+	</foreach>
+  </insert>
+  <sql id="weatherUpdate">
+    update weather 
+	<set> 
+      <if test="null != id">id = #{ id,jdbcType=VARCHAR},</if>
+      <if test="null != temperatureRange">temperature_range = #{ temperatureRange,jdbcType=VARCHAR},</if>
+      <if test="null != currentTemperature">current_temperature = #{ currentTemperature,jdbcType=INTEGER},</if>
+      <if test="null != humidity">humidity = #{ humidity,jdbcType=VARCHAR},</if>
+      <if test="null != pm25">pm2_5 = #{ pm25,jdbcType=VARCHAR},</if>
+      <if test="null != wind">wind = #{ wind,jdbcType=VARCHAR},</if>
+      <if test="null != weatherStatus">weather_status = #{ weatherStatus,jdbcType=VARCHAR},</if>
+      <if test="null != ultraviolet">ultraviolet = #{ ultraviolet,jdbcType=INTEGER},</if>
+      <if test="null != co2">CO2 = #{ co2,jdbcType=INTEGER},</if>
+      <if test="null != currentTime">current_time = #{ currentTime,jdbcType=TIMESTAMP}</if>
+	</set>
+	where id = #{id}
+  </sql>
+  <update id="update" parameterType="com.dingying.st.po.Weather">
+    <include refid="weatherUpdate" />
+  </update>
+  <update id="batchUpdate" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="weatherUpdate" />
+	</foreach>
+  </update>
+  <delete id="delById">
+    <![CDATA[ delete from weather where id = #{id} ]]>
+  </delete>
+  <delete id="delArray">
+    delete from weather where id in
+	<foreach collection="array" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+  <delete id="delList">
+    delete from weather where id in
+	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+</mapper>

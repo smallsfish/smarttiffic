@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingying.st.dao.RechargeMapper">
+  <resultMap id="BaseResultMap" type="com.dingying.st.po.Recharge">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="recharge_user" jdbcType="BIGINT" property="rechargeUser" />
+    <result column="recharge_access" jdbcType="VARCHAR" property="rechargeAccess" />
+    <result column="recharge_money" jdbcType="INTEGER" property="rechargeMoney" />
+    <result column="old_money" jdbcType="DECIMAL" property="oldMoney" />
+    <result column="recharge_time" jdbcType="TIMESTAMP" property="rechargeTime" />
+  </resultMap>
+  <sql id="rechargeColumns">
+    <![CDATA[ id,recharge_user,recharge_access,recharge_money,old_money,recharge_time ]]>
+  </sql>
+  <sql id="rechargeDynamicWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id = #{ id}</if>
+      <if test="null != rechargeUser and '' !=  rechargeUser">and recharge_user = #{ rechargeUser}</if>
+      <if test="null != rechargeAccess and '' !=  rechargeAccess">and recharge_access = #{ rechargeAccess}</if>
+      <if test="null != rechargeMoney and '' !=  rechargeMoney">and recharge_money = #{ rechargeMoney}</if>
+      <if test="null != oldMoney and '' !=  oldMoney">and old_money = #{ oldMoney}</if>
+      <if test="null != rechargeTime and '' !=  rechargeTime">and recharge_time = #{ rechargeTime}</if>
+	</where>
+  </sql>
+  <sql id="rechargeDynamicLikeWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id LIKE #{ id}</if>
+      <if test="null != rechargeUser and '' !=  rechargeUser">and recharge_user LIKE #{ rechargeUser}</if>
+      <if test="null != rechargeAccess and '' !=  rechargeAccess">and recharge_access LIKE #{ rechargeAccess}</if>
+      <if test="null != rechargeMoney and '' !=  rechargeMoney">and recharge_money LIKE #{ rechargeMoney}</if>
+      <if test="null != oldMoney and '' !=  oldMoney">and old_money LIKE #{ oldMoney}</if>
+      <if test="null != rechargeTime and '' !=  rechargeTime">and recharge_time LIKE #{ rechargeTime}</if>
+	</where>
+  </sql>
+  <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select <include refid="rechargeColumns" /> from  recharge where id = #{id}
+  </select>
+  <select id="getOne" parameterType="com.dingying.st.po.Recharge" resultMap="BaseResultMap">
+    select <include refid="rechargeColumns" /> from  recharge <include refid="rechargeDynamicWhere" /> limit 0 , 1
+  </select>
+  <select id="list" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="rechargeColumns" /> from  recharge <include refid="rechargeDynamicWhere" />
+	<if test="orderBy != null and orderBy != ''">
+          order by ${orderBy}
+      </if>
+  </select>
+  <select id="listPage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="rechargeColumns" /> from  recharge <include refid="rechargeDynamicWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="listLikePage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="rechargeColumns" /> from  recharge <include refid="rechargeDynamicLikeWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="countLike" parameterType="com.dingying.st.po.Recharge" resultType="java.lang.Long">
+    select count(1) from recharge <include refid="rechargeDynamicLikeWhere" />
+  </select>
+  <select id="count" parameterType="com.dingying.st.po.Recharge" resultType="java.lang.Long">
+    select count(1) from recharge <include refid="rechargeDynamicWhere" />
+  </select>
+  <sql id="save_recharge_columns">
+    insert into recharge(
+		recharge_user ,recharge_access ,recharge_money ,old_money ,recharge_time
+	) values
+  </sql>
+  <sql id="save_recharge_values">
+    (
+	  #{ rechargeUser,jdbcType=BIGINT},
+	  #{ rechargeAccess,jdbcType=VARCHAR},
+	  #{ rechargeMoney,jdbcType=INTEGER},
+	  #{ oldMoney,jdbcType=DECIMAL},
+	  #{ rechargeTime,jdbcType=TIMESTAMP}
+	)
+  </sql>
+  <insert id="save" keyProperty="id" parameterType="com.dingying.st.po.Recharge" useGeneratedKeys="true">
+    <include refid="save_recharge_columns" /><include refid="save_recharge_values" />
+  </insert>
+  <insert id="batchSave" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="save_recharge_columns" /><include refid="save_recharge_values" />
+	</foreach>
+  </insert>
+  <sql id="rechargeUpdate">
+    update recharge 
+	<set> 
+      <if test="null != rechargeUser">recharge_user = #{ rechargeUser,jdbcType=BIGINT},</if>
+      <if test="null != rechargeAccess">recharge_access = #{ rechargeAccess,jdbcType=VARCHAR},</if>
+      <if test="null != rechargeMoney">recharge_money = #{ rechargeMoney,jdbcType=INTEGER},</if>
+      <if test="null != oldMoney">old_money = #{ oldMoney,jdbcType=DECIMAL},</if>
+      <if test="null != rechargeTime">recharge_time = #{ rechargeTime,jdbcType=TIMESTAMP}</if>
+	</set>
+	where id = #{id}
+  </sql>
+  <update id="update" parameterType="com.dingying.st.po.Recharge">
+    <include refid="rechargeUpdate" />
+  </update>
+  <update id="batchUpdate" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="rechargeUpdate" />
+	</foreach>
+  </update>
+  <delete id="delById">
+    <![CDATA[ delete from recharge where id = #{id} ]]>
+  </delete>
+  <delete id="delArray">
+    delete from recharge where id in
+	<foreach collection="array" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+  <delete id="delList">
+    delete from recharge where id in
+	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+</mapper>

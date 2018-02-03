@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingying.st.dao.TrafficLightMapper">
+  <resultMap id="BaseResultMap" type="com.dingying.st.po.TrafficLight">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="crossing" jdbcType="INTEGER" property="crossing" />
+    <result column="red" jdbcType="INTEGER" property="red" />
+    <result column="green" jdbcType="INTEGER" property="green" />
+    <result column="yellow" jdbcType="INTEGER" property="yellow" />
+  </resultMap>
+  <sql id="traffic_lightColumns">
+    <![CDATA[ id,crossing,red,green,yellow ]]>
+  </sql>
+  <sql id="traffic_lightDynamicWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id = #{ id}</if>
+      <if test="null != crossing and '' !=  crossing">and crossing = #{ crossing}</if>
+      <if test="null != red and '' !=  red">and red = #{ red}</if>
+      <if test="null != green and '' !=  green">and green = #{ green}</if>
+      <if test="null != yellow and '' !=  yellow">and yellow = #{ yellow}</if>
+	</where>
+  </sql>
+  <sql id="traffic_lightDynamicLikeWhere">
+    <where>
+      <if test="null != id and '' !=  id">and id LIKE #{ id}</if>
+      <if test="null != crossing and '' !=  crossing">and crossing LIKE #{ crossing}</if>
+      <if test="null != red and '' !=  red">and red LIKE #{ red}</if>
+      <if test="null != green and '' !=  green">and green LIKE #{ green}</if>
+      <if test="null != yellow and '' !=  yellow">and yellow LIKE #{ yellow}</if>
+	</where>
+  </sql>
+  <select id="getById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select <include refid="traffic_lightColumns" /> from  traffic_light where id = #{id}
+  </select>
+  <select id="getOne" parameterType="com.dingying.st.po.TrafficLight" resultMap="BaseResultMap">
+    select <include refid="traffic_lightColumns" /> from  traffic_light <include refid="traffic_lightDynamicWhere" /> limit 0 , 1
+  </select>
+  <select id="list" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="traffic_lightColumns" /> from  traffic_light <include refid="traffic_lightDynamicWhere" />
+	<if test="orderBy != null and orderBy != ''">
+          order by ${orderBy}
+      </if>
+  </select>
+  <select id="listPage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="traffic_lightColumns" /> from  traffic_light <include refid="traffic_lightDynamicWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="listLikePage" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="traffic_lightColumns" /> from  traffic_light <include refid="traffic_lightDynamicLikeWhere" />
+	<if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+  </select>
+  <select id="countLike" parameterType="com.dingying.st.po.TrafficLight" resultType="java.lang.Long">
+    select count(1) from traffic_light <include refid="traffic_lightDynamicLikeWhere" />
+  </select>
+  <select id="count" parameterType="com.dingying.st.po.TrafficLight" resultType="java.lang.Long">
+    select count(1) from traffic_light <include refid="traffic_lightDynamicWhere" />
+  </select>
+  <sql id="save_traffic_light_columns">
+    insert into traffic_light(
+		crossing ,red ,green ,yellow
+	) values
+  </sql>
+  <sql id="save_traffic_light_values">
+    (
+	  #{ crossing,jdbcType=INTEGER},
+	  #{ red,jdbcType=INTEGER},
+	  #{ green,jdbcType=INTEGER},
+	  #{ yellow,jdbcType=INTEGER}
+	)
+  </sql>
+  <insert id="save" keyProperty="id" parameterType="com.dingying.st.po.TrafficLight" useGeneratedKeys="true">
+    <include refid="save_traffic_light_columns" /><include refid="save_traffic_light_values" />
+  </insert>
+  <insert id="batchSave" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="save_traffic_light_columns" /><include refid="save_traffic_light_values" />
+	</foreach>
+  </insert>
+  <sql id="traffic_lightUpdate">
+    update traffic_light 
+	<set> 
+      <if test="null != crossing">crossing = #{ crossing,jdbcType=INTEGER},</if>
+      <if test="null != red">red = #{ red,jdbcType=INTEGER},</if>
+      <if test="null != green">green = #{ green,jdbcType=INTEGER},</if>
+      <if test="null != yellow">yellow = #{ yellow,jdbcType=INTEGER}</if>
+	</set>
+	where id = #{id}
+  </sql>
+  <update id="update" parameterType="com.dingying.st.po.TrafficLight">
+    <include refid="traffic_lightUpdate" />
+  </update>
+  <update id="batchUpdate" parameterType="list">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	  <include refid="traffic_lightUpdate" />
+	</foreach>
+  </update>
+  <delete id="delById">
+    <![CDATA[ delete from traffic_light where id = #{id} ]]>
+  </delete>
+  <delete id="delArray">
+    delete from traffic_light where id in
+	<foreach collection="array" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+  <delete id="delList">
+    delete from traffic_light where id in
+	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </delete>
+</mapper>
