@@ -27,7 +27,7 @@
         <!-- 生成映射接口配置 -->
         <javaClientGenerator targetPackage="com.dingying.st.dao" targetProject="src/main/java" type="XMLMAPPER" />
 
-        <table tableName="%">
+        <table tableName="cars">
             <!--mysql 配置 -->
             <generatedKey column="id" sqlStatement="Mysql" identity="true" />
         </table>

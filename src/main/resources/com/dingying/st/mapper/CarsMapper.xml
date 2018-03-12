@@ -9,9 +9,10 @@
     <result column="color" jdbcType="VARCHAR" property="color" />
     <result column="balance" jdbcType="DECIMAL" property="balance" />
     <result column="flag" jdbcType="VARCHAR" property="flag" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
   </resultMap>
   <sql id="carsColumns">
-    <![CDATA[ id,plate_number,name,model,color,balance,flag ]]>
+    <![CDATA[ id,plate_number,name,model,color,balance,flag,uid ]]>
   </sql>
   <sql id="carsDynamicWhere">
     <where>
@@ -22,6 +23,7 @@
       <if test="null != color and '' !=  color">and color = #{ color}</if>
       <if test="null != balance and '' !=  balance">and balance = #{ balance}</if>
       <if test="null != flag and '' !=  flag">and flag = #{ flag}</if>
+      <if test="null != uid and '' !=  uid">and uid = #{ uid}</if>
 	</where>
   </sql>
   <sql id="carsDynamicLikeWhere">
@@ -33,6 +35,7 @@
       <if test="null != color and '' !=  color">and color LIKE #{ color}</if>
       <if test="null != balance and '' !=  balance">and balance LIKE #{ balance}</if>
       <if test="null != flag and '' !=  flag">and flag LIKE #{ flag}</if>
+      <if test="null != uid and '' !=  uid">and uid LIKE #{ uid}</if>
 	</where>
   </sql>
   <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -73,7 +76,7 @@
   </select>
   <sql id="save_cars_columns">
     insert into cars(
-		plate_number ,name ,model ,color ,balance ,flag
+		plate_number ,name ,model ,color ,balance ,flag ,uid
 	) values
   </sql>
   <sql id="save_cars_values">
@@ -83,7 +86,8 @@
 	  #{ model,jdbcType=VARCHAR},
 	  #{ color,jdbcType=VARCHAR},
 	  #{ balance,jdbcType=DECIMAL},
-	  #{ flag,jdbcType=VARCHAR}
+	  #{ flag,jdbcType=VARCHAR},
+	  #{ uid,jdbcType=BIGINT}
 	)
   </sql>
   <insert id="save" keyProperty="id" parameterType="com.dingying.st.po.Cars" useGeneratedKeys="true">
@@ -102,7 +106,8 @@
       <if test="null != model">model = #{ model,jdbcType=VARCHAR},</if>
       <if test="null != color">color = #{ color,jdbcType=VARCHAR},</if>
       <if test="null != balance">balance = #{ balance,jdbcType=DECIMAL},</if>
-      <if test="null != flag">flag = #{ flag,jdbcType=VARCHAR}</if>
+      <if test="null != flag">flag = #{ flag,jdbcType=VARCHAR},</if>
+      <if test="null != uid">uid = #{ uid,jdbcType=BIGINT}</if>
 	</set>
 	where id = #{id}
   </sql>

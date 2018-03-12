@@ -15,8 +15,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         if(user==null){
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
-            response.getWriter().append("{'code':1,'msg':'你没有登陆，请重新登陆'}");
-
+            response.getWriter().append("{'status':10,'msg':'你没有登陆，请重新登陆','count':0}");
             return false;
         }
         return super.preHandle(request, response, handler);

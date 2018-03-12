@@ -21,6 +21,8 @@ public class Cars {
     //车辆标志
     private String flag;
 
+    private Long uid;
+
     /**
      * @return id
      */
@@ -141,5 +143,19 @@ public class Cars {
      */
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+
+    /**
+     * @return uid
+     */
+    public Long getUid() {
+        return uid;
+    }
+
+    /**
+     * @param uid
+     */
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 }

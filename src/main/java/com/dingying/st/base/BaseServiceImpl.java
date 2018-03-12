@@ -29,7 +29,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
     }
 
     @Override
-    public List<?> list(T t,String orderBy) {
+    public List<T> list(T t,String orderBy) {
         Map<String, Object> map = buildParams(t, orderBy, null, null);
         return this.getMapper().list(map);
     }
